@@ -34,7 +34,7 @@ export const site = {
    * Automatically derived from astro.config.mjs `site` option (set ASTRO_SITE env var in CI).
    * Falls back to 'https://example.github.io' for local development.
    */
-  url: (import.meta.env.SITE ?? 'https://example.github.io').replace(/\/$/, ''),
+  url: (import.meta.env.SITE ?? 'https://serkankaragoz.github.io').replace(/\/$/, ''),
 
   /**
    * Base path. Leave '' for user/org pages (username.github.io).
