@@ -16,16 +16,7 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 
-const {
-  title,
-  description,
-  img,
-  img_alt,
-  url,
-  github,
-  giscus_comments,
-  redirect,
-} = project.data;
+const { title, description, img, img_alt, url, github, giscus_comments, redirect } = project.data;
 
 // If this project has a redirect, forward immediately
 if (redirect) {
@@ -38,7 +29,6 @@ const githubUrl = github ? `https://github.com/${github}` : undefined;
 const ogImagePath = img
   ? new URL(img, site.url).toString()
   : new URL(`${site.base}/og/project/${project.id}.png`, site.url).toString();
-
 ---
 
 <Page title={title} description={description} image={ogImagePath}>
@@ -262,5 +252,4 @@ const ogImagePath = img
       0 2px 5px 0 rgba(0, 0, 0, 0.16),
       0 2px 10px 0 rgba(0, 0, 0, 0.12);
   }
-
 </style>
