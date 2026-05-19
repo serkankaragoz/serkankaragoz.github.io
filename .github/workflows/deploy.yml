@@ -34,8 +34,8 @@ jobs:
           # Set these as repository variables (Settings → Variables) to override.
           # ASTRO_SITE: full URL of deployed site, e.g. https://username.github.io
           # ASTRO_BASE: base path for project pages, e.g. /repo-name (leave unset for user pages)
-          ASTRO_SITE: ${{ vars.ASTRO_SITE || 'https://dadangnh.github.io' }}
-          ASTRO_BASE: ${{ vars.ASTRO_BASE || '/as-folio' }}
+          ASTRO_SITE: ${{ vars.ASTRO_SITE || 'https://serkankaragoz.github.io' }}
+          ASTRO_BASE: ${{ vars.ASTRO_BASE || '' }}
 
       - name: Commit updated citations.yml
         run: |
