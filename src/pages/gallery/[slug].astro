@@ -1,8 +1,14 @@
 ---
 import { site } from '@config/site';
 import Page from '@layouts/Page.astro';
-import { getCollection, render } from 'astro:content';
+import { type CollectionEntry, getCollection, render } from 'astro:content';
 import { Icon } from 'astro-icon/components';
+
+type Props = {
+  photo: CollectionEntry<'photos'>;
+  prevPhoto: CollectionEntry<'photos'> | null;
+  nextPhoto: CollectionEntry<'photos'> | null;
+};
 
 export async function getStaticPaths() {
   const photos = (await getCollection('photos')).sort(
@@ -130,22 +136,38 @@ const allPhotos = (await getCollection('photos'))
   <script
     type="application/json"
     id="gallery-photos"
-    set:text={JSON.stringify({ base, currentId: photo.id, photos: allPhotos })}
+    set:html={JSON.stringify({ base, currentId: photo.id, photos: allPhotos })}
   />
 </Page>
 
 <script>
+  // Captured before each navigation so we can restore ?cat= if the router strips it.
+  let pendingCat: string | null = null;
+
+  document.addEventListener('astro:before-preparation', () => {
+    pendingCat = new URLSearchParams(location.search).get('cat');
+  });
+
   function initNav() {
     const dataEl = document.getElementById('gallery-photos');
-    if (!dataEl) return;
-
+    if (!dataEl) {
+      pendingCat = null; // Leaving gallery photo pages — discard stale context.
+      return;
+    }
     const { base, currentId, photos } = JSON.parse(dataEl.textContent!) as {
       base: string;
       currentId: string;
       photos: { id: string; title: string; categories: string[] }[];
     };
 
-    const cat = new URLSearchParams(location.search).get('cat');
+    // Read ?cat= from URL. If the router stripped it during navigation, restore it
+    // from the value captured in astro:before-preparation, then patch the URL back.
+    let cat = new URLSearchParams(location.search).get('cat');
+    if (!cat && pendingCat) {
+      cat = pendingCat;
+      history.replaceState(null, '', `${location.pathname}?cat=${encodeURIComponent(cat)}`);
+    }
+    pendingCat = null; // consumed
 
     // If a category context exists, filter the photo list to that category
     const list = cat ? photos.filter((p) => p.categories.includes(cat)) : photos;
@@ -154,8 +176,8 @@ const allPhotos = (await getCollection('photos'))
     const prevPhoto = idx !== -1 && idx + 1 < list.length ? list[idx + 1] : null;
     const nextPhoto = idx !== -1 && idx > 0 ? list[idx - 1] : null;
 
-    function photoUrl(p: { id: string }) {
-      return `${base}/gallery/${p.id}/${cat ? `?cat=${encodeURIComponent(cat)}` : ''}`;
+    function photoUrl(id: string): string {
+      return `${base}/gallery/${id}/${cat ? `?cat=${encodeURIComponent(cat)}` : ''}`;
     }
 
     // Update fixed side arrows
@@ -163,7 +185,7 @@ const allPhotos = (await getCollection('photos'))
     const nextArrow = document.getElementById('nav-next') as HTMLAnchorElement | null;
     if (prevArrow) {
       if (prevPhoto) {
-        prevArrow.href = photoUrl(prevPhoto);
+        prevArrow.href = photoUrl(prevPhoto.id);
         prevArrow.setAttribute('aria-label', `Previous: ${prevPhoto.title}`);
         prevArrow.style.display = '';
       } else {
@@ -172,7 +194,7 @@ const allPhotos = (await getCollection('photos'))
     }
     if (nextArrow) {
       if (nextPhoto) {
-        nextArrow.href = photoUrl(nextPhoto);
+        nextArrow.href = photoUrl(nextPhoto.id);
         nextArrow.setAttribute('aria-label', `Next: ${nextPhoto.title}`);
         nextArrow.style.display = '';
       } else {
@@ -187,7 +209,7 @@ const allPhotos = (await getCollection('photos'))
     const nextTitleEl = document.getElementById('nav-next-title');
     if (prevText) {
       if (prevPhoto) {
-        prevText.href = photoUrl(prevPhoto);
+        prevText.href = photoUrl(prevPhoto.id);
         prevText.style.visibility = '';
         if (prevTitleEl) prevTitleEl.textContent = prevPhoto.title;
       } else {
@@ -196,7 +218,7 @@ const allPhotos = (await getCollection('photos'))
     }
     if (nextText) {
       if (nextPhoto) {
-        nextText.href = photoUrl(nextPhoto);
+        nextText.href = photoUrl(nextPhoto.id);
         nextText.style.visibility = '';
         if (nextTitleEl) nextTitleEl.textContent = nextPhoto.title;
       } else {
@@ -212,13 +234,14 @@ const allPhotos = (await getCollection('photos'))
       backLink.insertAdjacentHTML('afterbegin', `← ${cat}`);
     }
 
-    // Keyboard navigation
+    // Keyboard navigation — use anchor.click() so ClientRouter intercepts via its
+    // normal link handler and navigates to the href (which already has ?cat=).
     function handleKey(e: KeyboardEvent) {
       if ((e.target as HTMLElement).closest('input, textarea, [contenteditable]')) return;
-      if (e.key === 'ArrowLeft' && prevArrow && prevArrow.style.display !== 'none') {
+      if (e.key === 'ArrowLeft' && prevPhoto && prevArrow && prevArrow.style.display !== 'none') {
         prevArrow.click();
       }
-      if (e.key === 'ArrowRight' && nextArrow && nextArrow.style.display !== 'none') {
+      if (e.key === 'ArrowRight' && nextPhoto && nextArrow && nextArrow.style.display !== 'none') {
         nextArrow.click();
       }
     }
