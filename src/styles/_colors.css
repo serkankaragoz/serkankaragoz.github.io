@@ -46,10 +46,10 @@
   --global-code-bg-color: #f3f4f6;
   --global-text-color: #1a1a1a;
   --global-text-color-light: #6c757d;
-  --global-theme-color: var(--color-purple);
-  --global-hover-color: var(--color-purple-dark);
+  --global-theme-color: var(--color-black);
+  --global-hover-color: var(--color-grey-light);
   --global-hover-text-color: var(--color-white);
-  --global-dropdown-hover-bg: var(--color-purple-dark);
+  --global-dropdown-hover-bg: var(--color-black);
   --global-dropdown-hover-text: var(--color-white);
   --global-footer-bg-color: var(--color-grey-dark);
   --global-footer-text-color: var(--color-grey-light);
