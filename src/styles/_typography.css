@@ -4,7 +4,8 @@
  */
 
 @theme {
-  --font-sans: 'Roboto', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
   --font-condensed: 'Roboto Condensed', 'Arial Narrow', sans-serif;
   --font-mono: 'Source Code Pro', 'Roboto Mono', 'Fira Code', ui-monospace, monospace;
 }
@@ -31,7 +32,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-sans);
+  font-family: var(--font-serif);
   font-weight: 700;
   scroll-margin-top: 66px; /* offset for fixed navbar */
 }
