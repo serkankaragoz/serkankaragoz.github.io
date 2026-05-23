@@ -1,0 +1,411 @@
+---
+import { site } from '@config/site';
+import Page from '@layouts/Page.astro';
+import { getCollection, render } from 'astro:content';
+import { Icon } from 'astro-icon/components';
+
+export async function getStaticPaths() {
+  const photos = (await getCollection('photos')).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+  );
+
+  return photos.map((photo, i) => ({
+    params: { slug: photo.id },
+    props: {
+      photo,
+      // Default (no category filter): global prev/next by date
+      prevPhoto: photos[i + 1] ?? null,
+      nextPhoto: photos[i - 1] ?? null,
+    },
+  }));
+}
+
+const { photo, prevPhoto, nextPhoto } = Astro.props;
+const { Content } = await render(photo);
+const base = site.base;
+
+const dateStr = photo.data.date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+// All photos serialised for client-side category filtering
+const allPhotos = (await getCollection('photos'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .map((p) => ({ id: p.id, title: p.data.title, categories: p.data.categories }));
+---
+
+<Page title={photo.data.title} description={photo.data.description} image={photo.data.image}>
+  <!-- Fixed side arrows (JS-driven) -->
+  <a
+    id="nav-prev"
+    href={prevPhoto ? `${base}/gallery/${prevPhoto.id}/` : '#'}
+    class="side-arrow side-arrow--prev"
+    aria-label={prevPhoto ? `Previous: ${prevPhoto.data.title}` : 'No previous photo'}
+    style={prevPhoto ? '' : 'display:none'}
+  >
+    <Icon name="fa-solid:chevron-left" />
+  </a>
+  <a
+    id="nav-next"
+    href={nextPhoto ? `${base}/gallery/${nextPhoto.id}/` : '#'}
+    class="side-arrow side-arrow--next"
+    aria-label={nextPhoto ? `Next: ${nextPhoto.data.title}` : 'No next photo'}
+    style={nextPhoto ? '' : 'display:none'}
+  >
+    <Icon name="fa-solid:chevron-right" />
+  </a>
+
+  <div class="photo-page">
+    <nav class="breadcrumb-nav">
+      <a href={`${base}/gallery/`} class="breadcrumb-link" id="back-link">
+        <Icon name="fa-solid:arrow-left" style="font-size:0.75rem;" />
+        &nbsp;Gallery
+      </a>
+    </nav>
+
+    <div class="photo-main">
+      <img src={photo.data.image} alt={photo.data.alt ?? photo.data.title} class="photo-full" />
+    </div>
+
+    <!-- Text prev/next bar (JS-driven, same data) -->
+    <div class="photo-nav">
+      <div class="photo-nav-side">
+        <a
+          id="nav-prev-text"
+          href={prevPhoto ? `${base}/gallery/${prevPhoto.id}/` : '#'}
+          class="photo-nav-link"
+          style={prevPhoto ? '' : 'visibility:hidden'}
+        >
+          <Icon name="fa-solid:arrow-left" style="font-size:0.7rem;" />
+          &nbsp;<span id="nav-prev-title">{prevPhoto?.data.title ?? ''}</span>
+        </a>
+      </div>
+      <div class="photo-nav-side photo-nav-side--right">
+        <a
+          id="nav-next-text"
+          href={nextPhoto ? `${base}/gallery/${nextPhoto.id}/` : '#'}
+          class="photo-nav-link"
+          style={nextPhoto ? '' : 'visibility:hidden'}
+        >
+          <span id="nav-next-title">{nextPhoto?.data.title ?? ''}</span>&nbsp;
+          <Icon name="fa-solid:arrow-right" style="font-size:0.7rem;" />
+        </a>
+      </div>
+    </div>
+
+    <div class="photo-info">
+      <h1 class="photo-title">{photo.data.title}</h1>
+
+      <div class="photo-meta">
+        <span>
+          <Icon name="fa-solid:calendar" style="font-size:0.75rem;" />
+          {dateStr}
+        </span>
+        {
+          photo.data.categories.length > 0 && (
+            <span class="photo-categories">
+              <Icon name="fa-solid:tag" style="font-size:0.75rem;" />
+              {photo.data.categories.map((cat, i) => (
+                <>
+                  <a href={`${base}/gallery/category/${cat}/`}>{cat}</a>
+                  {i < photo.data.categories.length - 1 && ', '}
+                </>
+              ))}
+            </span>
+          )
+        }
+      </div>
+
+      {photo.data.description && <p class="photo-description">{photo.data.description}</p>}
+
+      <div class="photo-content">
+        <Content />
+      </div>
+    </div>
+  </div>
+
+  <!-- Embed photo list for client-side category filtering -->
+  <script
+    type="application/json"
+    id="gallery-photos"
+    set:text={JSON.stringify({ base, currentId: photo.id, photos: allPhotos })}
+  />
+</Page>
+
+<script>
+  function initNav() {
+    const dataEl = document.getElementById('gallery-photos');
+    if (!dataEl) return;
+
+    const { base, currentId, photos } = JSON.parse(dataEl.textContent!) as {
+      base: string;
+      currentId: string;
+      photos: { id: string; title: string; categories: string[] }[];
+    };
+
+    const cat = new URLSearchParams(location.search).get('cat');
+
+    // If a category context exists, filter the photo list to that category
+    const list = cat ? photos.filter((p) => p.categories.includes(cat)) : photos;
+    const idx = list.findIndex((p) => p.id === currentId);
+
+    const prevPhoto = idx !== -1 && idx + 1 < list.length ? list[idx + 1] : null;
+    const nextPhoto = idx !== -1 && idx > 0 ? list[idx - 1] : null;
+
+    function photoUrl(p: { id: string }) {
+      return `${base}/gallery/${p.id}/${cat ? `?cat=${encodeURIComponent(cat)}` : ''}`;
+    }
+
+    // Update fixed side arrows
+    const prevArrow = document.getElementById('nav-prev') as HTMLAnchorElement | null;
+    const nextArrow = document.getElementById('nav-next') as HTMLAnchorElement | null;
+    if (prevArrow) {
+      if (prevPhoto) {
+        prevArrow.href = photoUrl(prevPhoto);
+        prevArrow.setAttribute('aria-label', `Previous: ${prevPhoto.title}`);
+        prevArrow.style.display = '';
+      } else {
+        prevArrow.style.display = 'none';
+      }
+    }
+    if (nextArrow) {
+      if (nextPhoto) {
+        nextArrow.href = photoUrl(nextPhoto);
+        nextArrow.setAttribute('aria-label', `Next: ${nextPhoto.title}`);
+        nextArrow.style.display = '';
+      } else {
+        nextArrow.style.display = 'none';
+      }
+    }
+
+    // Update text nav bar
+    const prevText = document.getElementById('nav-prev-text') as HTMLAnchorElement | null;
+    const nextText = document.getElementById('nav-next-text') as HTMLAnchorElement | null;
+    const prevTitleEl = document.getElementById('nav-prev-title');
+    const nextTitleEl = document.getElementById('nav-next-title');
+    if (prevText) {
+      if (prevPhoto) {
+        prevText.href = photoUrl(prevPhoto);
+        prevText.style.visibility = '';
+        if (prevTitleEl) prevTitleEl.textContent = prevPhoto.title;
+      } else {
+        prevText.style.visibility = 'hidden';
+      }
+    }
+    if (nextText) {
+      if (nextPhoto) {
+        nextText.href = photoUrl(nextPhoto);
+        nextText.style.visibility = '';
+        if (nextTitleEl) nextTitleEl.textContent = nextPhoto.title;
+      } else {
+        nextText.style.visibility = 'hidden';
+      }
+    }
+
+    // Update "back to gallery" link to return to the category page if applicable
+    const backLink = document.getElementById('back-link') as HTMLAnchorElement | null;
+    if (backLink && cat) {
+      backLink.href = `${base}/gallery/category/${encodeURIComponent(cat)}/`;
+      backLink.textContent = '';
+      backLink.insertAdjacentHTML('afterbegin', `← ${cat}`);
+    }
+
+    // Keyboard navigation
+    function handleKey(e: KeyboardEvent) {
+      if ((e.target as HTMLElement).closest('input, textarea, [contenteditable]')) return;
+      if (e.key === 'ArrowLeft' && prevArrow && prevArrow.style.display !== 'none') {
+        prevArrow.click();
+      }
+      if (e.key === 'ArrowRight' && nextArrow && nextArrow.style.display !== 'none') {
+        nextArrow.click();
+      }
+    }
+    document.addEventListener('keydown', handleKey);
+    document.addEventListener(
+      'astro:before-preparation',
+      () => {
+        document.removeEventListener('keydown', handleKey);
+      },
+      { once: true },
+    );
+  }
+
+  document.addEventListener('astro:page-load', initNav);
+</script>
+
+<style>
+  /* ── Fixed side arrows ───────────────────────────────────────────────────── */
+  .side-arrow {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--global-card-bg-color, #fff);
+    border: 1px solid var(--global-divider-color);
+    color: var(--global-text-color);
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    transition:
+      background 0.18s,
+      color 0.18s,
+      box-shadow 0.18s;
+  }
+
+  .side-arrow svg {
+    display: block;
+    width: 0.9em;
+    height: 0.9em;
+  }
+
+  .side-arrow:hover {
+    background: var(--global-theme-color);
+    color: var(--global-hover-text-color, #fff);
+    border-color: var(--global-theme-color);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  }
+
+  .side-arrow--prev {
+    left: 1rem;
+  }
+
+  .side-arrow--next {
+    right: 1rem;
+  }
+
+  /* On narrow viewports bring them closer to centre so they don't overlap content */
+  @media (max-width: 768px) {
+    .side-arrow {
+      width: 2.25rem;
+      height: 2.25rem;
+      /* Drop to lower third of viewport so they don't cover the image */
+      top: 65%;
+    }
+    .side-arrow--prev {
+      left: 0.5rem;
+    }
+    .side-arrow--next {
+      right: 0.5rem;
+    }
+  }
+
+  /* ── Photo page ──────────────────────────────────────────────────────────── */
+  .photo-page {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .photo-main {
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .photo-full {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+  }
+
+  /* ── Text prev/next bar ──────────────────────────────────────────────────── */
+  .photo-nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--global-divider-color);
+  }
+
+  .photo-nav-side {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .photo-nav-side--right {
+    text-align: right;
+  }
+
+  .photo-nav-link {
+    font-size: 0.82rem;
+    color: var(--global-text-color-light);
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    max-width: 100%;
+    transition: color 0.15s;
+  }
+
+  .photo-nav-link:hover {
+    color: var(--global-theme-color);
+  }
+
+  .photo-nav-link svg {
+    display: inline !important;
+    vertical-align: -0.1em;
+    width: 0.75em;
+    height: 0.75em;
+  }
+
+  /* ── Info section ────────────────────────────────────────────────────────── */
+  .photo-info {
+    padding: 0 0.25rem;
+  }
+
+  .photo-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--global-text-color);
+    font-family: var(--font-sans);
+    margin: 0 0 0.75rem;
+  }
+
+  .photo-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: var(--global-text-color-light);
+    margin-bottom: 1rem;
+  }
+
+  .photo-meta svg {
+    display: inline !important;
+    vertical-align: -0.125em;
+    width: 0.875em;
+    height: 0.875em;
+  }
+
+  .photo-categories a {
+    color: var(--global-text-color-light);
+    text-decoration: none;
+  }
+
+  .photo-categories a:hover {
+    color: var(--global-theme-color);
+  }
+
+  .photo-description {
+    color: var(--global-text-color);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    border-left: 3px solid var(--global-theme-color);
+    padding-left: 1rem;
+  }
+
+  .photo-content {
+    color: var(--global-text-color);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-top: 1rem;
+  }
+</style>

@@ -1,0 +1,98 @@
+---
+import PhotoCard from '@components/gallery/PhotoCard.astro';
+import Pagination from '@components/Pagination.astro';
+import { site } from '@config/site';
+import Page from '@layouts/Page.astro';
+import { getCollection } from 'astro:content';
+import { Icon } from 'astro-icon/components';
+
+export async function getStaticPaths() {
+  const allPhotos = (await getCollection('photos')).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+  );
+
+  const perPage = site.gallery.photosPerPage;
+  const totalPages = Math.ceil(allPhotos.length / perPage);
+
+  return Array.from({ length: totalPages - 1 }, (_, i) => {
+    const page = i + 2;
+    return {
+      params: { page: String(page) },
+      props: {
+        photos: allPhotos.slice((page - 1) * perPage, page * perPage),
+        currentPage: page,
+        totalPages,
+      },
+    };
+  });
+}
+
+const { photos, currentPage, totalPages } = Astro.props;
+const base = site.base;
+
+const allPhotos = await getCollection('photos');
+const allCategories = [...new Set(allPhotos.flatMap((p) => p.data.categories))].sort();
+const displayCategories =
+  site.gallery.displayCategories.length > 0 ? site.gallery.displayCategories : allCategories;
+---
+
+<Page title={`${site.gallery.name} — Page ${currentPage}`} description={site.gallery.description}>
+  <div class="post">
+    <header class="post-header">
+      <h1 class="post-title">{site.gallery.name.toLowerCase()}</h1>
+      <p class="gallery-description">{site.pages.gallery.description}</p>
+    </header>
+
+    {
+      displayCategories.length > 0 && (
+        <div class="tag-category-list">
+          <ul class="m-0 p-0">
+            {displayCategories.map((cat, i) => (
+              <>
+                <li>
+                  <Icon name="fa-solid:tag" />{' '}
+                  <a href={`${base}/gallery/category/${cat}/`}>{cat}</a>
+                </li>
+                {i < displayCategories.length - 1 && <p>&bull;</p>}
+              </>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    <div class="photo-grid">
+      {photos.map((photo) => <PhotoCard photo={photo} />)}
+    </div>
+
+    <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages}
+      prevUrl={currentPage === 2 ? `${base}/gallery/` : `${base}/gallery/page/${currentPage - 1}/`}
+      nextUrl={currentPage < totalPages ? `${base}/gallery/page/${currentPage + 1}/` : undefined}
+      basePath={`${base}/gallery/`}
+    />
+  </div>
+</Page>
+
+<style>
+  .gallery-description {
+    color: var(--global-text-color-light);
+    font-size: 1rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 576px) {
+    .photo-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

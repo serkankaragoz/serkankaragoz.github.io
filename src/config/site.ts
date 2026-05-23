@@ -124,6 +124,7 @@ export const site = {
       { label: 'hakkımda', href: '/' },
       { label: 'blog', href: '/blog/' },
       { label: 'projects', href: '/projects/' },
+      { label: 'gallery', href: '/gallery/' },
     ] as NavItem[],
   },
 
@@ -146,6 +147,21 @@ export const site = {
      * 'hidden'  — footer is not rendered at all
      */
     position: 'sticky' as 'sticky' | 'normal' | 'hidden',
+  },
+
+  // ─── Gallery ───────────────────────────────────────────────────────────────
+
+  gallery: {
+    /** Name shown in the gallery page heading. */
+    name: 'Gallery',
+    /** Description shown below the gallery heading. */
+    description: 'A collection of photos.',
+    /** Number of photos per page. */
+    photosPerPage: 12 as number,
+    /** Categories shown as badges on the gallery listing page header. */
+    displayCategories: [] as string[],
+    /** Message shown when no photos exist. */
+    emptyMessage: 'No photos yet. Check back soon!',
   },
 
   // ─── Blog ──────────────────────────────────────────────────────────────────
@@ -322,6 +338,10 @@ export const site = {
     projects: {
       /** Description shown below the "projects" heading on the projects page. */
       description: 'My projects',
+    },
+    gallery: {
+      /** Description shown below the "gallery" heading on the gallery page. */
+      description: 'A collection of my photos.',
     },
     teaching: {
       /** Description shown below the "teaching" heading on the teaching page. */

@@ -1,0 +1,82 @@
+---
+import PhotoCard from '@components/gallery/PhotoCard.astro';
+import Pagination from '@components/Pagination.astro';
+import { site } from '@config/site';
+import Page from '@layouts/Page.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allPhotos = await getCollection('photos');
+  const perPage = site.gallery.photosPerPage;
+  const allCategories = [...new Set(allPhotos.flatMap((p) => p.data.categories))];
+
+  return allCategories.map((category) => {
+    const catPhotos = allPhotos
+      .filter((p) => p.data.categories.includes(category))
+      .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+    const totalPages = Math.max(1, Math.ceil(catPhotos.length / perPage));
+    return {
+      params: { category },
+      props: {
+        photos: catPhotos.slice(0, perPage),
+        currentPage: 1,
+        totalPages,
+      },
+    };
+  });
+}
+
+const { category } = Astro.params;
+const { photos, currentPage, totalPages } = Astro.props;
+const base = site.base;
+---
+
+<Page title={`Gallery — ${category}`} description={`Photos in category "${category}"`}>
+  <div class="post">
+    <div class="breadcrumb-nav">
+      <a href={`${base}/gallery/`} class="breadcrumb-link"> &larr; All photos </a>
+    </div>
+
+    <header class="post-header">
+      <h1 class="post-title">
+        {category}
+      </h1>
+    </header>
+
+    {
+      photos.length === 0 ? (
+        <p style="color: var(--global-text-color-light);">No photos found in this category.</p>
+      ) : (
+        <div class="photo-grid">
+          {photos.map((photo) => (
+            <PhotoCard photo={photo} categoryContext={category} />
+          ))}
+        </div>
+      )
+    }
+
+    <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages}
+      prevUrl={undefined}
+      nextUrl={totalPages > 1 ? `${base}/gallery/category/${category}/page/2/` : undefined}
+      basePath={`${base}/gallery/category/${category}/`}
+    />
+  </div>
+</Page>
+
+<style>
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 576px) {
+    .photo-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>
