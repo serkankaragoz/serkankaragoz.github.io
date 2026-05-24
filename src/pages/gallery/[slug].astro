@@ -42,7 +42,7 @@ const allPhotos = (await getCollection('photos'))
   .map((p) => ({ id: p.id, title: p.data.title, categories: p.data.categories }));
 ---
 
-<Page title={photo.data.title} description={photo.data.description} image={photo.data.image}>
+<Page title={photo.data.title} image={photo.data.image}>
   <!-- Fixed side arrows (JS-driven) -->
   <a
     id="nav-prev"
@@ -64,12 +64,14 @@ const allPhotos = (await getCollection('photos'))
   </a>
 
   <div class="photo-page">
+    <!--
     <nav class="breadcrumb-nav">
       <a href={`${base}/gallery/`} class="breadcrumb-link" id="back-link">
         <Icon name="fa-solid:arrow-left" style="font-size:0.75rem;" />
         &nbsp;Gallery
       </a>
     </nav>
+    -->
 
     <div class="photo-main">
       <img src={photo.data.image} alt={photo.data.alt ?? photo.data.title} class="photo-full" />
@@ -123,8 +125,6 @@ const allPhotos = (await getCollection('photos'))
           )
         }
       </div>
-
-      {photo.data.description && <p class="photo-description">{photo.data.description}</p>}
 
       <div class="photo-content">
         <Content />
@@ -333,6 +333,8 @@ const allPhotos = (await getCollection('photos'))
   .photo-full {
     width: 100%;
     height: auto;
+    max-height: 60vh;
+    object-fit: contain;
     display: block;
   }
 
@@ -413,15 +415,6 @@ const allPhotos = (await getCollection('photos'))
 
   .photo-categories a:hover {
     color: var(--global-theme-color);
-  }
-
-  .photo-description {
-    color: var(--global-text-color);
-    font-size: 1rem;
-    line-height: 1.7;
-    margin-bottom: 1rem;
-    border-left: 3px solid var(--global-theme-color);
-    padding-left: 1rem;
   }
 
   .photo-content {

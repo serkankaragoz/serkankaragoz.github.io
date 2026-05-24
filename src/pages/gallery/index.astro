@@ -22,10 +22,10 @@ const base = site.base;
 
 <Page title={site.gallery.name} description={site.gallery.description}>
   <div class="post">
-    <header class="post-header">
-      <h1 class="post-title">{site.gallery.name.toLowerCase()}</h1>
-      <p class="gallery-description">{site.pages.gallery.description}</p>
-    </header>
+    <div class="header-bar">
+      <h1>{site.gallery.name}</h1>
+      <h2>{site.gallery.description}</h2>
+    </div>
 
     {
       displayCategories.length > 0 && (

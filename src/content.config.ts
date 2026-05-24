@@ -123,7 +123,6 @@ const photos = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/photos' }),
   schema: z.object({
     title: z.string(),
-    description: z.string().optional(),
     date: z.coerce.date(),
     categories: z.array(z.string()).optional().default([]),
     /** Path or URL to the photo. */

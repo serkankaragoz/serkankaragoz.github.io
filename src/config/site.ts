@@ -121,10 +121,10 @@ export const site = {
      * `href` values are relative to the site root (base is prepended automatically).
      */
     items: [
-      { label: 'hakkımda', href: '/' },
-      { label: 'blog', href: '/blog/' },
-      { label: 'projects', href: '/projects/' },
-      { label: 'gallery', href: '/gallery/' },
+      { label: 'Hakkımda', href: '/' },
+      { label: 'Blog', href: '/blog/' },
+      { label: 'Projelerim', href: '/projects/' },
+      { label: 'Galeri', href: '/gallery/' },
     ] as NavItem[],
   },
 
@@ -153,9 +153,9 @@ export const site = {
 
   gallery: {
     /** Name shown in the gallery page heading. */
-    name: 'Gallery',
+    name: 'Galeri',
     /** Description shown below the gallery heading. */
-    description: 'A collection of photos.',
+    description: 'Fotoğraf koleksiyonuma aşağıdan erişebilirsiniz.',
     /** Number of photos per page. */
     photosPerPage: 12 as number,
     /** Categories shown as badges on the gallery listing page header. */
@@ -168,7 +168,7 @@ export const site = {
 
   blog: {
     /** Name shown in the blog page heading. */
-    name: '',
+    name: 'Blog',
     description: 'Blogdaki yazılarıma aşağıdan erişebilirsiniz.',
     /** Number of posts per page. */
     postsPerPage: 5,

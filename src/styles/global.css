@@ -161,7 +161,7 @@
    */
   .page-container {
     width: 100%;
-    max-width: 930px;
+    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
     padding-left: 1rem;
@@ -356,7 +356,7 @@
   }
   .header-bar h1 {
     color: var(--global-theme-color);
-    font-size: 5rem;
+    font-size: 3rem;
     font-family: var(--font-sans);
     font-weight: 700;
   }
@@ -451,6 +451,10 @@
   /* ─── Profile (matches al-folio .profile) ────────────────────────── */
   .profile {
     width: 100%;
+    text-align: center;
+  }
+  .profile img {
+    margin: 0 auto;
   }
   .profile .more-info {
     margin-bottom: 5px;
@@ -471,6 +475,7 @@
   @media (min-width: 576px) {
     .profile {
       width: 30%;
+      max-width: 300px;
     }
     .profile .more-info p {
       display: block;
