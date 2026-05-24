@@ -181,26 +181,15 @@ function ogCard(title: string, description: string | undefined, type: string) {
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const posts = await getCollection('posts', (p) => !p.data.hidden && !p.data.draft);
-  const projects = await getCollection('projects');
 
-  return [
-    ...posts.map((post) => ({
-      params: { path: `blog/${post.id}` },
-      props: {
-        title: post.data.title,
-        description: post.data.description,
-        type: 'post',
-      },
-    })),
-    ...projects.map((project) => ({
-      params: { path: `project/${project.id}` },
-      props: {
-        title: project.data.title,
-        description: project.data.description,
-        type: 'project',
-      },
-    })),
-  ];
+  return posts.map((post) => ({
+    params: { path: `blog/${post.id}` },
+    props: {
+      title: post.data.title,
+      description: post.data.description,
+      type: 'post',
+    },
+  }));
 }
 
 export async function GET({ props }: APIContext) {

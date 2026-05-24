@@ -63,10 +63,7 @@ function urlEntry({ url, lastmod, changefreq, priority }: UrlEntry): string {
 }
 
 export async function GET(_ctx: APIContext): Promise<Response> {
-  const [posts, projects] = await Promise.all([
-    getCollection('posts', (p) => !p.data.draft && !p.data.hidden),
-    getCollection('projects', (p) => !p.data.redirect),
-  ]);
+  const posts = await getCollection('posts', (p) => !p.data.draft && !p.data.hidden);
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -86,12 +83,6 @@ export async function GET(_ctx: APIContext): Promise<Response> {
       changefreq: 'weekly',
       priority: 0.9,
     },
-    {
-      url: loc('/projects/'),
-      lastmod: gitLastmod('src/pages/projects/index.astro'),
-      changefreq: 'monthly',
-      priority: 0.8,
-    },
   ];
 
   const postUrls: UrlEntry[] = posts
@@ -107,15 +98,7 @@ export async function GET(_ctx: APIContext): Promise<Response> {
       priority: 0.7,
     }));
 
-  const projectUrls: UrlEntry[] = projects.map((p) => ({
-    url: loc(`/projects/${p.id}/`),
-    // Only emit lastmod when git can provide a real date; omit otherwise
-    lastmod: p.filePath ? gitLastmod(p.filePath) : undefined,
-    changefreq: 'monthly',
-    priority: 0.7,
-  }));
-
-  const allUrls = [...staticUrls, ...postUrls, ...projectUrls];
+  const allUrls = [...staticUrls, ...postUrls];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
