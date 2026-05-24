@@ -66,8 +66,7 @@ export const site = {
       Bisiklet sürücüsü
       &nbsp;·&nbsp;
       Fotoğrafçı
-      &nbsp;·&nbsp;
-      Mühendis`,
+      &nbsp;`,
 
     /**
      * Address block below profile photo.
