@@ -30,11 +30,11 @@ const items = site.navbar.items;
 
 <nav
   class="navbar fixed top-0 right-0 left-0 z-40"
-  style="background-color: var(--global-bg-color); border-bottom: 1px solid var(--global-divider-color); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); height: 57px;"
+  style="background-color: var(--global-bg-color); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); height: 80px;"
 >
   <div
     class="page-container flex h-full items-center justify-between"
-    style="max-width: 930px; margin: 0 auto; padding: 0 1rem;"
+    style="max-width: 1400px; margin: 0 auto; padding: 0 1rem;"
   >
     <!-- Brand -->
     <a
@@ -54,7 +54,7 @@ const items = site.navbar.items;
             return (
               <a
                 href={`${site.base}${item.href}`}
-                class={`px-3 py-1 text-sm transition-colors ${active ? 'font-bold' : ''}`}
+                class={`nav-leaf-link px-3 py-1 text-base transition-colors ${active ? 'active font-bold' : ''}`}
                 style={`color: ${active ? 'var(--global-theme-color)' : 'var(--global-text-color)'}; text-decoration: none;`}
               >
                 {item.label}
@@ -221,6 +221,38 @@ const items = site.navbar.items;
 </nav>
 
 <style>
+  /* ── Scroll-triggered border ───────────────────────────────────────── */
+  .navbar {
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
+  }
+
+  .navbar.scrolled {
+    border-color: var(--global-divider-color);
+  }
+
+  /* ── Desktop nav link hover underline ──────────────────────────────── */
+  .nav-leaf-link {
+    position: relative;
+  }
+
+  .nav-leaf-link::after {
+    content: '';
+    position: absolute;
+    left: 0.75rem; /* match px-3 padding */
+    right: 0.75rem;
+    bottom: 0;
+    height: 1px;
+    background-color: var(--global-theme-color);
+    width: 0;
+    transition: width 0.3s ease-in-out;
+  }
+
+  .nav-leaf-link:hover::after,
+  .nav-leaf-link.active::after {
+    width: calc(100% - 1.5rem); /* full width minus px-3 on each side */
+  }
+
   /* ── Hamburger animation ────────────────────────────────────────────── */
   .icon-bar {
     transition: all 0.2s;
@@ -449,9 +481,21 @@ const items = site.navbar.items;
     });
   }
 
+  function initScrollBorder() {
+    const nav = document.querySelector('.navbar') as HTMLElement | null;
+    if (!nav) return;
+    const update = () => nav.classList.toggle('scrolled', window.scrollY > 10);
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  }
+
   // Initial load + re-init after every View Transition DOM swap
   initNavbar();
-  document.addEventListener('astro:after-swap', initNavbar);
+  initScrollBorder();
+  document.addEventListener('astro:after-swap', () => {
+    initNavbar();
+    initScrollBorder();
+  });
 
   // Reset overflow lock before swap so it doesn't bleed into the next page
   document.addEventListener('astro:before-swap', () => {

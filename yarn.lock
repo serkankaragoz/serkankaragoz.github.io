@@ -1095,6 +1095,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fontsource/inter@npm:^5.2.8":
+  version: 5.2.8
+  resolution: "@fontsource/inter@npm:5.2.8"
+  checksum: 10c0/f737dd50005e4809887ba55ae0c9b7174216d6d14875d17a4fbb9a0ad75dec4265928b805a43fe16a23f14a878f1974a398bbfc84ad65c79fc4d4b9c3ea154e1
+  languageName: node
+  linkType: hard
+
+"@fontsource/playfair-display@npm:^5.2.8":
+  version: 5.2.8
+  resolution: "@fontsource/playfair-display@npm:5.2.8"
+  checksum: 10c0/9802f1928bf01fb15428fa3f579bc06d05ab44a70d4e9ba372c58e856598a8766595816c0fdfd536888f6d9dcef13be1365335f40ffa17025f483eb1a7c656f3
+  languageName: node
+  linkType: hard
+
 "@fontsource/roboto-condensed@npm:^5.2.8":
   version: 5.2.8
   resolution: "@fontsource/roboto-condensed@npm:5.2.8"
@@ -3239,6 +3253,8 @@ __metadata:
     "@commitlint/cli": "npm:^20.5.0"
     "@commitlint/config-conventional": "npm:^20.5.0"
     "@eslint/js": "npm:^9"
+    "@fontsource/inter": "npm:^5.2.8"
+    "@fontsource/playfair-display": "npm:^5.2.8"
     "@fontsource/roboto": "npm:^5.2.10"
     "@fontsource/roboto-condensed": "npm:^5.2.8"
     "@fontsource/source-code-pro": "npm:^5.2.7"

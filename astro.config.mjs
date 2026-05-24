@@ -148,6 +148,10 @@ export default defineConfig({
           'eye',
           'redo',
           'share-alt',
+          'arrow-left',
+          'arrow-right',
+          'chevron-left',
+          'chevron-right',
         ],
         'fa-regular': ['comment', 'star', 'bookmark', 'heart'],
         academicons: [

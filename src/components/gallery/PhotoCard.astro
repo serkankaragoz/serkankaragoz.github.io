@@ -1,0 +1,117 @@
+---
+import { site } from '@config/site';
+
+interface Props {
+  photo: {
+    id: string;
+    data: {
+      title: string;
+      date: Date;
+      categories: string[];
+      image: string;
+      alt?: string;
+    };
+  };
+  /** When set, appends ?cat=<value> to the link so the photo page knows the navigation context. */
+  categoryContext?: string;
+}
+
+const { photo, categoryContext } = Astro.props;
+const base = site.base;
+const qs = categoryContext ? `?cat=${encodeURIComponent(categoryContext)}` : '';
+const href = `${base}/gallery/${photo.id}/${qs}`;
+const dateStr = photo.data.date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<a href={href} class="photo-card" aria-label={photo.data.title}>
+  <div class="photo-frame">
+    <img
+      src={photo.data.image}
+      alt={photo.data.alt ?? photo.data.title}
+      loading="lazy"
+      decoding="async"
+    />
+    <div class="photo-overlay">
+      <p class="photo-overlay-title">{photo.data.title}</p>
+      {
+        photo.data.categories.length > 0 && (
+          <p class="photo-overlay-cats">{photo.data.categories.join(' · ')}</p>
+        )
+      }
+      <p class="photo-overlay-date">{dateStr}</p>
+    </div>
+  </div>
+</a>
+
+<style>
+  .photo-card {
+    display: block;
+    text-decoration: none;
+  }
+
+  .photo-frame {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    background-color: var(--global-divider-color);
+  }
+
+  .photo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+  }
+
+  .photo-card:hover .photo-frame img {
+    transform: scale(1.06);
+  }
+
+  .photo-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.72) 0%,
+      rgba(0, 0, 0, 0.18) 60%,
+      transparent 100%
+    );
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0.85rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .photo-card:hover .photo-overlay {
+    opacity: 1;
+  }
+
+  .photo-overlay-title {
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .photo-overlay-cats {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.72rem;
+    margin: 0.2rem 0 0;
+    text-transform: lowercase;
+    letter-spacing: 0.02em;
+  }
+
+  .photo-overlay-date {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.7rem;
+    margin: 0.15rem 0 0;
+  }
+</style>

@@ -78,6 +78,56 @@
   src: url('@fontsource/source-code-pro/files/source-code-pro-latin-600-normal.woff2')
     format('woff2');
 }
+/* Inter 300 */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: fallback;
+  font-weight: 300;
+  src: url('@fontsource/inter/files/inter-latin-300-normal.woff2') format('woff2');
+}
+/* Inter 400 */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: fallback;
+  font-weight: 400;
+  src: url('@fontsource/inter/files/inter-latin-400-normal.woff2') format('woff2');
+}
+/* Inter 500 */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: fallback;
+  font-weight: 500;
+  src: url('@fontsource/inter/files/inter-latin-500-normal.woff2') format('woff2');
+}
+/* Inter 600 */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: fallback;
+  font-weight: 600;
+  src: url('@fontsource/inter/files/inter-latin-600-normal.woff2') format('woff2');
+}
+/* Playfair Display 400 */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-display: fallback;
+  font-weight: 400;
+  src: url('@fontsource/playfair-display/files/playfair-display-latin-400-normal.woff2')
+    format('woff2');
+}
+/* Playfair Display 700 */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-display: fallback;
+  font-weight: 700;
+  src: url('@fontsource/playfair-display/files/playfair-display-latin-700-normal.woff2')
+    format('woff2');
+}
 
 /* Configure dark: variant to use data-theme attribute (matches Base.astro) */
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
@@ -111,7 +161,7 @@
    */
   .page-container {
     width: 100%;
-    max-width: 930px;
+    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
     padding-left: 1rem;
@@ -306,7 +356,7 @@
   }
   .header-bar h1 {
     color: var(--global-theme-color);
-    font-size: 5rem;
+    font-size: 3rem;
     font-family: var(--font-sans);
     font-weight: 700;
   }
@@ -401,6 +451,10 @@
   /* ─── Profile (matches al-folio .profile) ────────────────────────── */
   .profile {
     width: 100%;
+    text-align: center;
+  }
+  .profile img {
+    margin: 0 auto;
   }
   .profile .more-info {
     margin-bottom: 5px;
@@ -421,6 +475,7 @@
   @media (min-width: 576px) {
     .profile {
       width: 30%;
+      max-width: 300px;
     }
     .profile .more-info p {
       display: block;
@@ -1123,7 +1178,6 @@
     color: var(--global-text-color);
     line-height: 1.7;
   }
-
   .prose a {
     color: var(--global-theme-color);
   }
@@ -1168,6 +1222,15 @@
   }
 }
 
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  font-family: var(--font-sans);
+}
+
 /* ─── Shiki dual-theme dark mode ─────────────────────────────────────────── */
 /* Shiki embeds light colors as inline styles and dark colors as CSS vars.   */
 /* This maps our [data-theme='dark'] toggle to those variables.              */
@@ -1195,21 +1258,24 @@ html[data-theme='dark'] {
   --d2h-line-border-color: var(--d2h-dark-line-border-color, #21262d);
   --d2h-file-header-bg-color: var(--d2h-dark-file-header-bg-color, #161b22);
   --d2h-file-header-border-color: var(--d2h-dark-file-header-border-color, #30363d);
-  --d2h-empty-placeholder-bg-color: var(--d2h-dark-empty-placeholder-bg-color, hsla(215,8%,47%,.1));
+  --d2h-empty-placeholder-bg-color: var(
+    --d2h-dark-empty-placeholder-bg-color,
+    hsla(215, 8%, 47%, 0.1)
+  );
   --d2h-empty-placeholder-border-color: var(--d2h-dark-empty-placeholder-border-color, #30363d);
-  --d2h-selected-color: var(--d2h-dark-selected-color, rgba(56,139,253,.1));
-  --d2h-ins-bg-color: var(--d2h-dark-ins-bg-color, rgba(46,160,67,.15));
-  --d2h-ins-border-color: var(--d2h-dark-ins-border-color, rgba(46,160,67,.4));
-  --d2h-ins-highlight-bg-color: var(--d2h-dark-ins-highlight-bg-color, rgba(46,160,67,.4));
+  --d2h-selected-color: var(--d2h-dark-selected-color, rgba(56, 139, 253, 0.1));
+  --d2h-ins-bg-color: var(--d2h-dark-ins-bg-color, rgba(46, 160, 67, 0.15));
+  --d2h-ins-border-color: var(--d2h-dark-ins-border-color, rgba(46, 160, 67, 0.4));
+  --d2h-ins-highlight-bg-color: var(--d2h-dark-ins-highlight-bg-color, rgba(46, 160, 67, 0.4));
   --d2h-ins-label-color: var(--d2h-dark-ins-label-color, #3fb950);
-  --d2h-del-bg-color: var(--d2h-dark-del-bg-color, rgba(248,81,73,.1));
-  --d2h-del-border-color: var(--d2h-dark-del-border-color, rgba(248,81,73,.4));
-  --d2h-del-highlight-bg-color: var(--d2h-dark-del-highlight-bg-color, rgba(248,81,73,.4));
+  --d2h-del-bg-color: var(--d2h-dark-del-bg-color, rgba(248, 81, 73, 0.1));
+  --d2h-del-border-color: var(--d2h-dark-del-border-color, rgba(248, 81, 73, 0.4));
+  --d2h-del-highlight-bg-color: var(--d2h-dark-del-highlight-bg-color, rgba(248, 81, 73, 0.4));
   --d2h-del-label-color: var(--d2h-dark-del-label-color, #f85149);
-  --d2h-change-del-color: var(--d2h-dark-change-del-color, rgba(210,153,34,.2));
-  --d2h-change-ins-color: var(--d2h-dark-change-ins-color, rgba(46,160,67,.25));
-  --d2h-info-bg-color: var(--d2h-dark-info-bg-color, rgba(56,139,253,.1));
-  --d2h-info-border-color: var(--d2h-dark-info-border-color, rgba(56,139,253,.4));
+  --d2h-change-del-color: var(--d2h-dark-change-del-color, rgba(210, 153, 34, 0.2));
+  --d2h-change-ins-color: var(--d2h-dark-change-ins-color, rgba(46, 160, 67, 0.25));
+  --d2h-info-bg-color: var(--d2h-dark-info-bg-color, rgba(56, 139, 253, 0.1));
+  --d2h-info-border-color: var(--d2h-dark-info-border-color, rgba(56, 139, 253, 0.4));
   --d2h-change-label-color: var(--d2h-dark-change-label-color, #d29922);
   --d2h-moved-label-color: var(--d2h-dark-moved-label-color, #3572b0);
   --d2h-color: var(--d2h-dark-color, #e6edf3);

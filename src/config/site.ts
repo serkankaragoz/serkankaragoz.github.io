@@ -66,8 +66,7 @@ export const site = {
       Bisiklet sürücüsü
       &nbsp;·&nbsp;
       Fotoğrafçı
-      &nbsp;·&nbsp;
-      Mühendis`,
+      &nbsp;`,
 
     /**
      * Address block below profile photo.
@@ -121,9 +120,9 @@ export const site = {
      * `href` values are relative to the site root (base is prepended automatically).
      */
     items: [
-      { label: 'hakkımda', href: '/' },
-      { label: 'blog', href: '/blog/' },
-      { label: 'projects', href: '/projects/' },
+      { label: 'Hakkımda', href: '/' },
+      { label: 'Blog', href: '/blog/' },
+      { label: 'Galeri', href: '/gallery/' },
     ] as NavItem[],
   },
 
@@ -148,11 +147,26 @@ export const site = {
     position: 'sticky' as 'sticky' | 'normal' | 'hidden',
   },
 
+  // ─── Gallery ───────────────────────────────────────────────────────────────
+
+  gallery: {
+    /** Name shown in the gallery page heading. */
+    name: 'Galeri',
+    /** Description shown below the gallery heading. */
+    description: 'Fotoğraf koleksiyonuma aşağıdan erişebilirsiniz.',
+    /** Number of photos per page. */
+    photosPerPage: 12 as number,
+    /** Categories shown as badges on the gallery listing page header. */
+    displayCategories: [] as string[],
+    /** Message shown when no photos exist. */
+    emptyMessage: 'No photos yet. Check back soon!',
+  },
+
   // ─── Blog ──────────────────────────────────────────────────────────────────
 
   blog: {
     /** Name shown in the blog page heading. */
-    name: '',
+    name: 'Blog',
     description: 'Blogdaki yazılarıma aşağıdan erişebilirsiniz.',
     /** Number of posts per page. */
     postsPerPage: 5,
@@ -319,9 +333,9 @@ export const site = {
   // ─── Page copy ────────────────────────────────────────────────────────────
 
   pages: {
-    projects: {
-      /** Description shown below the "projects" heading on the projects page. */
-      description: 'My projects',
+    gallery: {
+      /** Description shown below the "gallery" heading on the gallery page. */
+      description: 'A collection of my photos.',
     },
     teaching: {
       /** Description shown below the "teaching" heading on the teaching page. */
