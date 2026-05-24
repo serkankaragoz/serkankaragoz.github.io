@@ -123,7 +123,6 @@ export const site = {
     items: [
       { label: 'Hakkımda', href: '/' },
       { label: 'Blog', href: '/blog/' },
-      { label: 'Projelerim', href: '/projects/' },
       { label: 'Galeri', href: '/gallery/' },
     ] as NavItem[],
   },
@@ -335,10 +334,6 @@ export const site = {
   // ─── Page copy ────────────────────────────────────────────────────────────
 
   pages: {
-    projects: {
-      /** Description shown below the "projects" heading on the projects page. */
-      description: 'My projects',
-    },
     gallery: {
       /** Description shown below the "gallery" heading on the gallery page. */
       description: 'A collection of my photos.',
