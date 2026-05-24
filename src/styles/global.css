@@ -1178,7 +1178,6 @@
     color: var(--global-text-color);
     line-height: 1.7;
   }
-
   .prose a {
     color: var(--global-theme-color);
   }
@@ -1221,6 +1220,15 @@
     overflow-x: auto;
     padding: 0.5rem 0;
   }
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  font-family: var(--font-sans);
 }
 
 /* ─── Shiki dual-theme dark mode ─────────────────────────────────────────── */
