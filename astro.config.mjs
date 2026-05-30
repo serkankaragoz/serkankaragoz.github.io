@@ -74,6 +74,7 @@ export default defineConfig({
       'covers.openlibrary.org',
       'github-readme-stats.vercel.app',
       'github-profile-trophy.vercel.app',
+      'res.cloudinary.com',
     ],
   },
   integrations: [

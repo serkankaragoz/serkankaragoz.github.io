@@ -2,7 +2,7 @@
 title: Kastamonu Ormanı
 date: 2017-06-25
 categories: [doga, kastamonu]
-image: https://raw.githubusercontent.com/serkankaragoz/kastamonu-images/refs/heads/master/DSC_1049.jpg
+image: https://res.cloudinary.com/dsrh1hzo1/image/upload/v1780136649/DSC_1049_gmrual.jpg
 alt: Kastamonu orman
 ---
 

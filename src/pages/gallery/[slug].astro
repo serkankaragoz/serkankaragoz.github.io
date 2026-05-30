@@ -1,6 +1,8 @@
 ---
 import { site } from '@config/site';
 import Page from '@layouts/Page.astro';
+import { cloudinaryFull } from '@utils/cloudinary';
+import { Image } from 'astro:assets';
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import { Icon } from 'astro-icon/components';
 
@@ -74,7 +76,12 @@ const allPhotos = (await getCollection('photos'))
     -->
 
     <div class="photo-main">
-      <img src={photo.data.image} alt={photo.data.alt ?? photo.data.title} class="photo-full" />
+      <Image
+        src={cloudinaryFull(photo.data.image)}
+        inferSize
+        alt={photo.data.alt ?? photo.data.title}
+        class="photo-full"
+      />
     </div>
 
     <!-- Text prev/next bar (JS-driven, same data) -->
@@ -124,6 +131,10 @@ const allPhotos = (await getCollection('photos'))
             </span>
           )
         }
+        <a href={photo.data.image} target="_blank" rel="noopener noreferrer" class="view-original">
+          <Icon name="fa-solid:external-link-alt" style="font-size:0.75rem;" />
+          Full size
+        </a>
       </div>
 
       <div class="photo-content">
@@ -414,6 +425,16 @@ const allPhotos = (await getCollection('photos'))
   }
 
   .photo-categories a:hover {
+    color: var(--global-theme-color);
+  }
+
+  .view-original {
+    color: var(--global-text-color-light);
+    text-decoration: none;
+    margin-left: auto;
+  }
+
+  .view-original:hover {
     color: var(--global-theme-color);
   }
 
