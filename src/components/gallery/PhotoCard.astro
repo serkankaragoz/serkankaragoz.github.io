@@ -1,5 +1,7 @@
 ---
 import { site } from '@config/site';
+import { cloudinaryThumb } from '@utils/cloudinary';
+import { Image } from 'astro:assets';
 
 interface Props {
   photo: {
@@ -29,11 +31,11 @@ const dateStr = photo.data.date.toLocaleDateString('en-US', {
 
 <a href={href} class="photo-card" aria-label={photo.data.title}>
   <div class="photo-frame">
-    <img
-      src={photo.data.image}
+    <Image
+      src={cloudinaryThumb(photo.data.image)}
+      width={600}
+      height={600}
       alt={photo.data.alt ?? photo.data.title}
-      loading="lazy"
-      decoding="async"
     />
     <div class="photo-overlay">
       <p class="photo-overlay-title">{photo.data.title}</p>
