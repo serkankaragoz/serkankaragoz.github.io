@@ -7,6 +7,20 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.2.0](https://github.com/serkankaragoz/serkankaragoz.github.io/compare/v1.1.0...v1.2.0) (2026-05-30)
+
+
+### Features
+
+* image optimization added with cloudinary ([#3](https://github.com/serkankaragoz/serkankaragoz.github.io/issues/3)) ([3701419](https://github.com/serkankaragoz/serkankaragoz.github.io/commit/3701419f5a82784875c960588799241373311490))
+* remove projects references and add preflight script ([7835ce9](https://github.com/serkankaragoz/serkankaragoz.github.io/commit/7835ce95f62c9246a8bff7dd3809efb21c4257f4))
+
+
+### Miscellaneous
+
+* ignore package-lock.json and remove from tracking ([d8d5498](https://github.com/serkankaragoz/serkankaragoz.github.io/commit/d8d5498f524590d84b659302f9215a519090ad3e))
+* regenerate yarn.lock with Yarn 4 ([b2d024c](https://github.com/serkankaragoz/serkankaragoz.github.io/commit/b2d024ccacd3c78c17097b6ec6d06d91ef524163))
+
 ## [1.1.0](https://github.com/dadangnh/as-folio/compare/v1.0.0...v1.1.0) (2026-05-04)
 
 
