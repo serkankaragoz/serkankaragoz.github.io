@@ -1,5 +1,5 @@
 ---
-title: Mogan'da akşam
+title: Mogan'da Akşam
 date: 2024-09-18
 categories: [doga]
 image: https://res.cloudinary.com/dsrh1hzo1/image/upload/mogan-aksamustu_xf2jie.jpg

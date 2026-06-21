@@ -1,5 +1,5 @@
 ---
-title: Çankırı'da Kırgıbayır manzarası
+title: Çankırı'da Kırgıbayır Manzarası
 date: 2024-04-05
 categories: [doga]
 image: https://res.cloudinary.com/dsrh1hzo1/image/upload/cankiri-kirgibayir_wqf8tl.jpg
